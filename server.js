@@ -74,8 +74,9 @@ app.command('/ticket_request', async({ack, body, client})=> {
      }
 })
 
-app.view('modal-identifier', async ({ ack, body, view }) => {
-    await ack();
+app.view('modal-identifier', async ({ ack, body, view, client }) => {
+    await ack(); // Acknowledge the view submission
+
     console.log('View submission', body, view);
 
     // Respond with "Hello, it's working"
@@ -107,10 +108,13 @@ app.view('modal-identifier', async ({ ack, body, view }) => {
     };
 
     // Send the response to update the modal
-    await client.views.update({
-        view_id: body.view.id,
-        hash: body.view.hash,
-        view: response.view
-    });
-
+    try {
+        await client.views.update({
+            view_id: body.view.id,
+            hash: body.view.hash,
+            view: response.view
+        });
+    } catch (error) {
+        console.error('Error updating view:', error);
+    }
 });

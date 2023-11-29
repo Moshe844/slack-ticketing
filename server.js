@@ -74,3 +74,9 @@ app.command('/ticket_request', async({ack, body, client})=> {
      }
 })
 
+app.view('modal-identifier', async({ack, body, view})=> {
+    await ack()
+
+    console.log('View submission', view);
+})
+

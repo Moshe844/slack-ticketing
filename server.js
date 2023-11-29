@@ -5,7 +5,7 @@ const { App } = require('@slack/bolt');
 
 const app = new App({
     signingSecret: "509aa143a9443b8555447987dfe107b6",
-    token: "xoxb-268086987505-6284266826912-Diw4rmJOrcUfwhsaLkQJhdRp",
+    token: "xoxb-268086987505-6284266826912-yl4g03unUkEnlceEztFxwLOs",
 });
 console.log('SLACK_SIGNING_SECRET:', process.env.SLACK_SIGNING_SECRET);
 

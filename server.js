@@ -31,6 +31,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
                     "type": "plain_text",
                     "text": "Submit"
                 },
+                
                 "blocks": [
                     {
                         "type": "input",
@@ -64,8 +65,10 @@ app.command('/ticket_request', async({ack, body, client})=> {
                         }
                     }
                 ],
+                "callback_id" : "your_view_callback_id",
                 "type": "modal"
             }
+            
         })
 
         console.log('Modal opened successfully:', result);

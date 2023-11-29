@@ -15,9 +15,10 @@ const app = new App({
 })()
 
 app.command('/ticket_request', async({ack, body, client})=> {
+    try{
      await ack();
      console.log(body.trigger_id);
-     try{
+     
         const result = await client.views.open({
             trigger_id: body.trigger_id,
 

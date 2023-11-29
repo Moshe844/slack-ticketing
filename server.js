@@ -69,6 +69,11 @@ app.command('/ticket_request', async({ack, body, client})=> {
         })
 
         console.log('Modal opened successfully:', result);
+
+        app.view('your_view_callback_id', async ({ ack }) => {
+            await ack();
+            console.log('Acknowledged view submission');
+        });
      }
      catch (error){
         console.error(error)

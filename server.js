@@ -74,9 +74,18 @@ app.command('/ticket_request', async({ack, body, client})=> {
      }
 })
 
-app.view('modal-identifier', async({ack, body, view})=> {
-    await ack()
+app.view('modal-identifier', async ({ ack, body, view }) => {
+    console.log('View submission received:', body, view);
 
-    console.log('View submission', body, view);
-})
+    try {
+        // Your logic for handling the view submission
 
+        // Acknowledge the view submission
+        await ack();
+        console.log('Acknowledged view submission');
+    } catch (error) {
+        console.error('Error handling view submission:', error);
+        // Don't forget to acknowledge even in case of an error
+        await ack();
+    }
+});

@@ -75,40 +75,41 @@ app.command('/ticket_request', async({ack, body, client})=> {
 })
 
 app.view('modal-identifier', async ({ ack, body, view, client }) => {
-    await ack(); // Acknowledge the view submission
-
-    console.log('View submission', body, view);
-
-    // Respond with "Hello, it's working"
-    const response = {
-        response_action: "update",
-        view: {
-            type: "modal",
-            title: {
-                type: "plain_text",
-                text: "Submit ticket",
-                emoji: true
-            },
-            close: {
-                type: "plain_text",
-                text: "Cancel",
-                emoji: true
-            },
-            blocks: [
-                {
-                    type: "section",
-                    block_id: "section678",
-                    text: {
-                        type: "mrkdwn",
-                        text: "Hello, it's working"
-                    }
-                }
-            ]
-        }
-    };
-
-    // Send the response to update the modal
     try {
+        // Acknowledge the view submission immediately
+        ack();
+
+        console.log('View submission', body, view);
+
+        // Respond with "Hello, it's working"
+        const response = {
+            response_action: "update",
+            view: {
+                type: "modal",
+                title: {
+                    type: "plain_text",
+                    text: "Submit ticket",
+                    emoji: true
+                },
+                close: {
+                    type: "plain_text",
+                    text: "Cancel",
+                    emoji: true
+                },
+                blocks: [
+                    {
+                        type: "section",
+                        block_id: "section678",
+                        text: {
+                            type: "mrkdwn",
+                            text: "Hello, it's working"
+                        }
+                    }
+                ]
+            }
+        };
+
+        // Send the response to update the modal
         await client.views.update({
             view_id: body.view.id,
             hash: body.view.hash,

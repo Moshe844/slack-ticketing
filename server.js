@@ -22,48 +22,48 @@ app.command('/ticket_request', async({ack, body, client})=> {
             trigger_id: body.trigger_id,
 
             view: {
-                "type": "modal",
-                "submit": {
-                    "type": "plain_text",
-                    "text": "Submit",
-                    "emoji": true
-                },
-                "close": {
-                    "type": "plain_text",
-                    "text": "Cancel",
-                    "emoji": true
-                },
                 "title": {
                     "type": "plain_text",
-                    "text": "Submit ticket",
-                    "emoji": true
+                    "text": "Modal Title"
+                },
+                "submit": {
+                    "type": "plain_text",
+                    "text": "Submit"
                 },
                 "blocks": [
                     {
                         "type": "input",
                         "element": {
                             "type": "plain_text_input",
-                            "action_id": "plain_text_input-action"
+                            "action_id": "sl_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Placeholder text for single-line input"
+                            }
                         },
                         "label": {
                             "type": "plain_text",
-                            "text": "Subject",
-                            "emoji": true
+                            "text": "Label"
                         }
                     },
                     {
                         "type": "input",
-                        "label": {
-                            "type": "plain_text",
-                            "text": "How can we help you?",
-                            "emoji": true
-                        },
                         "element": {
                             "type": "plain_text_input",
-                            "multiline": true
+                            "action_id": "ml_input",
+                            "multiline": true,
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Placeholder text for multi-line input"
+                            }
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Label"
                         }
                     }
-                ]
+                ],
+                "type": "modal"
             }
         })
 
@@ -74,48 +74,48 @@ app.command('/ticket_request', async({ack, body, client})=> {
      }
 })
 
-app.view('modal-identifier', async ({ ack, body, view, client }) => {
-    try {
-        // Acknowledge the view submission immediately
-        ack();
+// app.view('modal-identifier', async ({ ack, body, view, client }) => {
+//     try {
+//         // Acknowledge the view submission immediately
+//         ack();
 
-        console.log('View submission', body, view);
+//         console.log('View submission', body, view);
 
-        // Respond with "Hello, it's working"
-        const response = {
-            response_action: "update",
-            view: {
-                type: "modal",
-                title: {
-                    type: "plain_text",
-                    text: "Submit ticket",
-                    emoji: true
-                },
-                close: {
-                    type: "plain_text",
-                    text: "Cancel",
-                    emoji: true
-                },
-                blocks: [
-                    {
-                        type: "section",
-                        block_id: "section678",
-                        text: {
-                            type: "mrkdwn",
-                            text: "Hello, it's working"
-                        }
-                    }
-                ]
-            }
-        };
+//         // Respond with "Hello, it's working"
+//         const response = {
+//             response_action: "update",
+//             view: {
+//                 type: "modal",
+//                 title: {
+//                     type: "plain_text",
+//                     text: "Submit ticket",
+//                     emoji: true
+//                 },
+//                 close: {
+//                     type: "plain_text",
+//                     text: "Cancel",
+//                     emoji: true
+//                 },
+//                 blocks: [
+//                     {
+//                         type: "section",
+//                         block_id: "section678",
+//                         text: {
+//                             type: "mrkdwn",
+//                             text: "Hello, it's working"
+//                         }
+//                     }
+//                 ]
+//             }
+//         };
 
-        // Send the response to update the modal
-        await client.views.update({
-            view_id: body.view.id,
-            hash: body.view.hash,
-            view: response.view
-        });
-    } catch (error) {
-        console.error('Error updating view:', error);
-    }
-});
+//         // Send the response to update the modal
+//         await client.views.update({
+//             view_id: body.view.id,
+//             hash: body.view.hash,
+//             view: response.view
+//         });
+//     } catch (error) {
+//         console.error('Error updating view:', error);
+//     }
+// });

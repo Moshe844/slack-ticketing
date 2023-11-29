@@ -75,17 +75,42 @@ app.command('/ticket_request', async({ack, body, client})=> {
 })
 
 app.view('modal-identifier', async ({ ack, body, view }) => {
-    console.log('View submission received:', body, view);
+    await ack();
+    console.log('View submission', body, view);
 
-    try {
-        // Your logic for handling the view submission
+    // Respond with "Hello, it's working"
+    const response = {
+        response_action: "update",
+        view: {
+            type: "modal",
+            title: {
+                type: "plain_text",
+                text: "Submit ticket",
+                emoji: true
+            },
+            close: {
+                type: "plain_text",
+                text: "Cancel",
+                emoji: true
+            },
+            blocks: [
+                {
+                    type: "section",
+                    block_id: "section678",
+                    text: {
+                        type: "mrkdwn",
+                        text: "Hello, it's working"
+                    }
+                }
+            ]
+        }
+    };
 
-        // Acknowledge the view submission
-        await ack();
-        console.log('Acknowledged view submission');
-    } catch (error) {
-        console.error('Error handling view submission:', error);
-        // Don't forget to acknowledge even in case of an error
-        await ack();
-    }
+    // Send the response to update the modal
+    await client.views.update({
+        view_id: body.view.id,
+        hash: body.view.hash,
+        view: response.view
+    });
+
 });

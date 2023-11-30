@@ -81,11 +81,11 @@ app.command('/ticket_request', async({ack, body, client})=> {
      }
 })
 
-app.view('your_view_callback_id', async ({ ack, body, client }) => {
+app.view('your_view_callback_id', async ({ ack, body }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     const subject = body.view.state.values.uik1r.sl_input.value;
     const message = body.view.state.values["35GrF"].ml_input.value;
-    await sendEmail(client, subject, message)
+    await sendEmail( subject, message)
     await ack();
     console.log('Acknowledged view submission', body);
 });

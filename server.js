@@ -82,16 +82,16 @@ app.command('/ticket_request', async({ack, body, client})=> {
 })
 
 app.view('your_view_callback_id', async ({ ack, body, client }) => {
-    const subjectValue = body.view.state.values.sl_input.value;
-    const messageValue = body.view.state.values.ml_input.value;
-    sendEmail(client, subjectValue, messageValue)
+  const subject = body.view.state.values.your_views_callback_id.sl_input.value;
+  const message = body.view.state.values.your_views_callback_id.ml_input.value;
+    sendEmail(client, subject, message)
     await ack();
     console.log('Acknowledged view submission', body);
 });
 
 
 
-async function sendEmail(){
+async function sendEmail(subject, message){
    const transporter =  nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -105,8 +105,8 @@ async function sendEmail(){
     const info = await transporter.sendMail({
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
-          subject: subjectValue || "Default subject",
-          text: messageValue || "Default message"
+          subject: subject,
+          text: message
     })
     console.log("message sent:", + info.messageId);
 }

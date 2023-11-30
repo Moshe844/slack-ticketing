@@ -89,8 +89,8 @@ app.view('your_view_callback_id', async ({ ack, body, client }) => {
         console.log('View Payload:', JSON.stringify(body.view, null, 2));
 
         // Check if sl_input and ml_input are present in the payload
-        const slInput = body.view.blocks[0]?.element?.value;
-        const mlInput = body.view.blocks[1]?.element?.value;
+        const slInput = body.view.state.values.uik1r.sl_input.value;
+        const mlInput = body.view.state.values['35GrF'].ml_input.value;
 
         if (!slInput || !mlInput) {
             throw new Error('Missing input values');

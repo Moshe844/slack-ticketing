@@ -96,7 +96,7 @@ async function sendEmail(){
         secure: true,
         auth: {
             user: "motty6700@gmail.com",
-            pass: "Moshe6700!",
+            pass: "lufw fqhz dmxb xslj",
         }
     })
 

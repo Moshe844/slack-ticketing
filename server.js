@@ -82,12 +82,19 @@ app.command('/ticket_request', async({ack, body, client})=> {
 })
 
 app.view('your_view_callback_id', async ({ ack, body, client }) => {
-  const subject = body.view.state.values.your_views_callback_id.sl_input.value;
-  const message = body.view.state.values.your_views_callback_id.ml_input.value;
-    sendEmail(client, subject, message)
-    await ack();
-    console.log('Acknowledged view submission', body);
-});
+    try {
+        const subject = body.view.state.values.your_views_callback_id.sl_input.value;
+        const message = body.view.state.values.your_views_callback_id.ml_input.value;
+          await sendEmail(client, subject, message)
+          await ack();
+          console.log('Acknowledged view submission', body);
+
+        }catch(error){
+            console.error(error)
+        }
+ 
+      });
+    
 
 
 

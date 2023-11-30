@@ -1,7 +1,8 @@
 
 require('dotenv').config();
-
+const nodemailer = require("nodemailer")
 const { App } = require('@slack/bolt');
+const { info } = require('console');
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -80,53 +81,17 @@ app.command('/ticket_request', async({ack, body, client})=> {
      }
 })
 
-app.view('your_view_callback_id', async ({ ack }) => {
+app.view('your_view_callback_id', async ({ ack, body }) => {
+    // await sendEmail(client, body.view.state.values);
     await ack();
-    console.log('Acknowledged view submission');
+    console.log('Acknowledged view submission', body);
 });
 
-// app.view('modal-identifier', async ({ ack, body, view, client }) => {
-//     try {
-//         // Acknowledge the view submission immediately
-//         ack();
+// const transporter = nodemailer.createTransport({
+//     host: "smtp-mail.outlook.com",
+//     port: 993,
+//     secure: true,
+//     auth: {
 
-//         console.log('View submission', body, view);
-
-//         // Respond with "Hello, it's working"
-//         const response = {
-//             response_action: "update",
-//             view: {
-//                 type: "modal",
-//                 title: {
-//                     type: "plain_text",
-//                     text: "Submit ticket",
-//                     emoji: true
-//                 },
-//                 close: {
-//                     type: "plain_text",
-//                     text: "Cancel",
-//                     emoji: true
-//                 },
-//                 blocks: [
-//                     {
-//                         type: "section",
-//                         block_id: "section678",
-//                         text: {
-//                             type: "mrkdwn",
-//                             text: "Hello, it's working"
-//                         }
-//                     }
-//                 ]
-//             }
-//         };
-
-//         // Send the response to update the modal
-//         await client.views.update({
-//             view_id: body.view.id,
-//             hash: body.view.hash,
-//             view: response.view
-//         });
-//     } catch (error) {
-//         console.error('Error updating view:', error);
 //     }
-// });
+// })

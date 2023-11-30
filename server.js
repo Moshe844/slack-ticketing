@@ -82,53 +82,31 @@ app.command('/ticket_request', async({ack, body, client})=> {
 })
 
 app.view('your_view_callback_id', async ({ ack, body, client }) => {
-    try {
-        const userName = body.user.id;
-
-        // Check the payload structure to debug
-        console.log('View Payload:', JSON.stringify(body.view, null, 2));
-
-        // Check if sl_input and ml_input are present in the payload
-        const slInput = body.view.state.values.uik1r.sl_input.value;
-        const mlInput = body.view.state.values['35GrF'].ml_input.value;
-
-        if (!slInput || !mlInput) {
-            throw new Error('Missing input values');
-        }
-
-        const fullSubject = `From ${userName}: ${slInput}`;
-        await sendEmail(client, fullSubject, mlInput);
-
-        await ack();
-        console.log('Acknowledged view submission', body);
-    } catch (error) {
-        console.error(error);
-    }
+    sendEmail(client, body.view.state.values)
+    await ack();
+    console.log('Acknowledged view submission', body);
 });
 
-    
 
 
-
-async function sendEmail(mlInput, fullSubject){
+async function sendEmail(){
    const transporter =  nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD,
+            user: "motty6700@gmail.com",
+            pass: "lufw fqhz dmxb xslj",
         }
     })
 
     const info = await transporter.sendMail({
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
-          subject: fullSubject,
-          text: mlInput
+          subject: "Testing gmail",
+          text: "Having issues with P200"
     })
-    console.log("message sent:" + info.messageId);
-    console.log(info.accepted);
+    console.log("message sent:", + info.messageId);
 }
 
-// sendEmail().catch(console.error)
+sendEmail().catch(console.error)

@@ -95,7 +95,7 @@ app.view('your_view_callback_id', async ({ ack, body, client }) => {
 async function sendEmail(subject, message){
 
     console.log('Subject:', subject);
-    console.log('Message:', message);
+    console.log('My Message:', message);
 
    const transporter =  nodemailer.createTransport({
         host: 'smtp.gmail.com',

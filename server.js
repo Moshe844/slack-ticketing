@@ -106,11 +106,15 @@ async function sendEmail(client, formData) {
     try {
         const userEmail = await client.auth.test(); // Get the user's email from the token
 
+        // Extract values from the formData object
+        const slInputValue = formData.sl_input?.value || 'N/A';
+        const mlInputValue = formData.ml_input?.value || 'N/A';
+
         const message = {
             from: userEmail.user,
             to: "arye6700@gmail.com",
             subject: "Hello",
-            text: `Testing purposes\nSingle-line input: ${formData.sl_input.value}\nMulti-line input: ${formData.ml_input.value}`,
+            text: `Testing purposes\nSingle-line input: ${slInputValue}\nMulti-line input: ${mlInputValue}`,
         };
 
         const info = await transporter.sendMail(message);

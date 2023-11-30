@@ -82,6 +82,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
 })
 
 app.view('your_view_callback_id', async ({ ack, body, client }) => {
+    console.log('View Submission Payload:', body);
     sendEmail(client, body.view.state.values)
     await ack();
     console.log('Acknowledged view submission', body);
@@ -106,7 +107,7 @@ async function sendEmail(){
           subject: "Testing gmail",
           text: "Having issues with P200"
     })
-    console.log("message sent:", + info.messageId);
+    console.log("message sent:" + info.messageId);
 }
 
-sendEmail().catch(console.error)
+// sendEmail().catch(console.error)

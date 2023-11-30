@@ -82,9 +82,8 @@ app.command('/ticket_request', async({ack, body, client})=> {
 })
 
 app.view('your_view_callback_id', async ({ ack, body, client }) => {
-    const subjectValue = body.view.state.values.sl_input.value;
-    const messageValue = body.view.state.values.sm_input.value;
-    sendEmail(client, subjectValue, messageValue)
+    const subjectValue = body.view.state.values.sl_input ? body.view.state.values.sl_input.value : '';
+    sendEmail(client, subjectValue)
     await ack();
     console.log('Acknowledged view submission', body);
 });

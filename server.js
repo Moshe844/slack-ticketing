@@ -106,7 +106,7 @@ async function sendEmail(){
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
           subject: subjectValue || "Default subject",
-          html: messageValue || "Default message"
+          text: messageValue || "Default message"
     })
     console.log("message sent:", + info.messageId);
 }

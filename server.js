@@ -97,20 +97,26 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true,
     auth: {
-       user: process.env.GMAIL_USER,
-       pass: process.env.GMAIL_PASSWORD
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASSWORD
     }
-})
+});
 
-async function sendEmail(){
-    const info = await transporter.sendMail({
-        from: process.env.GMAIL_USER,
-        to: "arye6700@gmail.com",
-        subject: "Hello",
-        text: "testing purposes"
-    });
+async function sendEmail(client, formData) {
+    try {
+        const userEmail = await client.auth.test(); // Get the user's email from the token
 
-    console.log("Message sent %s", info.messageId);
+        const message = {
+            from: userEmail.user,
+            to: "arye6700@gmail.com",
+            subject: "Hello",
+            text: `Testing purposes\nSingle-line input: ${formData.sl_input.value}\nMulti-line input: ${formData.ml_input.value}`,
+        };
+
+        const info = await transporter.sendMail(message);
+        console.log("Message sent:", info.messageId);
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw error; // Propagate the error back for further handling or logging
+    }
 }
-
-sendEmail().catch(console.error)

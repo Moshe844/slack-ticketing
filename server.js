@@ -110,7 +110,7 @@ app.view('your_view_callback_id', async ({ ack, body, client }) => {
 
 
 
-async function sendEmail(subject, fullSubject){
+async function sendEmail(mlInput, fullSubject){
    const transporter =  nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -124,8 +124,8 @@ async function sendEmail(subject, fullSubject){
     const info = await transporter.sendMail({
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
-          subject: subject + user.info,
-          text: fullSubject
+          subject: fullSubject,
+          text: mlInput
     })
     console.log("message sent:" + info.messageId);
     console.log(info.accepted);

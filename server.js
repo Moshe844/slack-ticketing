@@ -2,7 +2,7 @@
 require('dotenv').config();
 const nodemailer = require("nodemailer")
 const { App } = require('@slack/bolt');
-const { info } = require('console');
+
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -93,6 +93,10 @@ app.view('your_view_callback_id', async ({ ack, body, client }) => {
 
 
 async function sendEmail(subject, message){
+
+    console.log('Subject:', subject);
+    console.log('Message:', message);
+
    const transporter =  nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -110,7 +114,8 @@ async function sendEmail(subject, message){
           text: message
     })
     console.log("message sent:" + info.messageId);
-    console.log("message:" + info.rejected)
+    console.log("Message info:", info);
+    console.log("message rejected:" + info.rejected)
 }
 
 // sendEmail().catch(console.error)

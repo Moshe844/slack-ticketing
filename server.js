@@ -80,47 +80,33 @@ app.command('/ticket_request', async({ack, body, client})=> {
         console.error(error)
      }
 })
-app.view('your_view_callback_id', async ({ ack, body, client }) => {
-    try {
-        // Process the view submission here
-        await sendEmail(client, body.view.state.values);
-        await ack();
-        console.log('Acknowledged view submission', body);
-    } catch (error) {
-        console.error('Error processing view submission:', error);
-        await ack({ response_action: 'errors', errors: { error: 'Something went wrong.' } });
-    }
+
+app.view('your_view_callback_id', async ({ ack, body }) => {
+    sendEmail(client, body.view.state.values)
+    await ack();
+    console.log('Acknowledged view submission', body);
 });
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASSWORD
-    }
-});
 
-async function sendEmail(client, formData) {
-    try {
-        const userEmail = await client.auth.test(); // Get the user's email from the token
 
-        // Extract values from the formData object
-        const slInputValue = formData.sl_input?.value || 'N/A';
-        const mlInputValue = formData.ml_input?.value || 'N/A';
+async function sendEmail(){
+   const transporter =  nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: "motty6700@gmail.com",
+            pass: "Moshe6700!",
+        }
+    })
 
-        const message = {
-            from: userEmail.user,
-            to: "arye6700@gmail.com",
-            subject: "Hello",
-            text: `Testing purposes\nSingle-line input: ${slInputValue}\nMulti-line input: ${mlInputValue}`,
-        };
-
-        const info = await transporter.sendMail(message);
-        console.log("Message sent:", info.messageId);
-    } catch (error) {
-        console.error('Error sending email:', error);
-        throw error; // Propagate the error back for further handling or logging
-    }
+    const info = await transporter.sendMail({
+          from: "SlackEmail <motty6700@gmail.com>",
+          to: "arye6700@gmail.com",
+          subject: "Testing gmail",
+          html: "<h1>Test me pls</h1>"
+    })
+    console.log("message sent:", + info.messageId);
 }
+
+sendEmail().catch(console.error)

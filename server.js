@@ -102,7 +102,7 @@ async function sendEmail(){
 
     const info = await transporter.sendMail({
           from: "SlackEmail <motty6700@gmail.com>",
-          to: "technicalsupport@fidelitypayment.com",
+          to: "techsupport@fidelitypayment.com",
           subject: "Testing gmail",
           html: "<h1>Test me pls</h1>"
     })

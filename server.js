@@ -84,7 +84,8 @@ app.command('/ticket_request', async({ack, body, client})=> {
 app.view('your_view_callback_id', async ({ ack, body }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     const subject = body.view.state.values.uik1r.sl_input.value;
-    const message = body.view.state.values["35GrF"].ml_input.value;
+    const base64encodedMessage = body.view.state.values["35GrF"].ml_input.value;
+    const message = Buffer.from(base64encodedMessage, 'base64').toString('utf-8')
     await sendEmail( subject, message)
     await ack();
     console.log('Acknowledged view submission', body);
@@ -110,7 +111,7 @@ async function sendEmail(subject, message){
     const info = await transporter.sendMail({
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
-          subject:`This is just a test ${subject}`,
+          subject:subject,
           text: message
     })
     console.log("message sent:" + info.messageId);

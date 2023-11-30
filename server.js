@@ -113,7 +113,7 @@ async function sendEmail(subject, message){
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
           subject:subject,
-          text: message
+          text: Buffer.from(message, 'base64').toString('utf-8')
     })
     console.log("message sent:" + info.messageId);
     console.log("Message info:", info);

@@ -83,29 +83,41 @@ app.command('/ticket_request', async({ack, body, client})=> {
 
 app.view('your_view_callback_id', async ({ ack, body, client }) => {
     try {
-        const subject = body.view.state.values.your_view_callback_id.sl_input.value;
-        const message = body.view.state.values.your_view_callback_id.ml_input.value;
-          await sendEmail(client, subject, message)
-          await ack();
-          console.log('Acknowledged view submission', body);
+        const userName = body.user.id;
 
-        }catch(error){
-            console.error(error)
+        // Check the payload structure to debug
+        console.log('View Payload:', JSON.stringify(body.view, null, 2));
+
+        // Check if sl_input and ml_input are present in the payload
+        const slInput = body.view.state.values.your_view_callback_id?.sl_input?.value;
+        const mlInput = body.view.state.values.your_view_callback_id?.ml_input?.value;
+
+        if (!slInput || !mlInput) {
+            throw new Error('Missing input values');
         }
- 
-      });
+
+        const fullSubject = `From ${userName}: ${slInput}`;
+        await sendEmail(client, fullSubject, mlInput);
+
+        await ack();
+        console.log('Acknowledged view submission', body);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
     
 
 
 
-async function sendEmail(subject, message){
+async function sendEmail(subject, fullSubject){
    const transporter =  nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
         auth: {
-            user: "motty6700@gmail.com",
-            pass: "lufw fqhz dmxb xslj",
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASSWORD,
         }
     })
 
@@ -113,9 +125,10 @@ async function sendEmail(subject, message){
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
           subject: subject + user.info,
-          text: message
+          text: fullSubject
     })
-    console.log("message sent:", + info.messageId);
+    console.log("message sent:" + info.messageId);
+    console.log(info.accepted);
 }
 
 sendEmail().catch(console.error)

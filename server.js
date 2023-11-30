@@ -110,7 +110,7 @@ async function sendEmail(subject, message){
     const info = await transporter.sendMail({
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
-          subject: subject,
+          subject:`This is just a test ${subject}`,
           text: message
     })
     console.log("message sent:" + info.messageId);

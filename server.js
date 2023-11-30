@@ -85,7 +85,7 @@ app.view('your_view_callback_id', async ({ ack, body, client }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     const subject = body.view.state.values.uik1r.sl_input.value;
     const message = body.view.state.values["35GrF"].ml_input.value;
-    sendEmail(client, subject, message)
+    await sendEmail(client, subject, message)
     await ack();
     console.log('Acknowledged view submission', body);
 });
@@ -98,8 +98,8 @@ async function sendEmail(subject, message){
         port: 465,
         secure: true,
         auth: {
-            user: "motty6700@gmail.com",
-            pass: "lufw fqhz dmxb xslj",
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
         }
     })
 
@@ -110,6 +110,7 @@ async function sendEmail(subject, message){
           text: message
     })
     console.log("message sent:" + info.messageId);
+    console.log("message:" + info.rejected)
 }
 
 // sendEmail().catch(console.error)

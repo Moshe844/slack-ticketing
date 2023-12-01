@@ -132,8 +132,8 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
             ? 'GatewaySupport@cardknox.com'
             : null;
 
-        const subject = body.view.state.values['6P0U6'].sl_input.value;
-        const message = body.view.state.values['WGUh+'].ml_input.value;
+        const subject = body.view.state.values['LR7lr'].sl_input.value;
+        const message = body.view.state.values['yybjc'].ml_input.value;
     
     console.log("Decoded Message", message);
     

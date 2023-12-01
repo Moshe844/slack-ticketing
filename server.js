@@ -115,17 +115,25 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     const subject = body.view.state.values.uik1r.sl_input.value;
     const message = body.view.state.values["35GrF"].ml_input.value;
+
+    const checkboxes = body.view.state.values["checkboxes-action"]["checkboxes-action"].selected_options;
+
+    const emailAddress = checkboxes[0].value === 'value-0'
+    ? 'techsupport@fidelitypayment.com'
+    : checkboxes[0].value === 'value-1'
+    ? 'GatewaySupport@cardknox.com'
+    : null
     
     console.log("Decoded Message", message);
     
-    await sendEmail( subject, message)
+    await sendEmail( subject, message), emailAddress
     await ack();
     console.log('Acknowledged view submission', body);
 });
 
 
 
-async function sendEmail(subject, message){
+async function sendEmail(subject, message, emailAddress){
 
     console.log('Subject:', subject);
     console.log('My Message:', message);
@@ -144,7 +152,7 @@ async function sendEmail(subject, message){
 
     const info = await transporter.sendMail({
           from: "SlackEmail <motty6700@gmail.com>",
-          to: "techsupport@fidelitypayment.com",
+          to: emailAddress,
           subject:subject,
           text: message
     })

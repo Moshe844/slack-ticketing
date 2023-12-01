@@ -113,18 +113,17 @@ app.command('/ticket_request', async({ack, body, client})=> {
 
 app.view('your_view_callback_id', async ({ ack, body }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
-    const subject = body.view.state.values.uik1r.sl_input.value;
-    const message = body.view.state.values["35GrF"].ml_input.value;
+    // const subject = body.view.state.values.uik1r.sl_input.value;
+    // const message = body.view.state.values["35GrF"].ml_input.value;
 
-    // const subject = body.view.state.values.sl_input.sl_input.value;
-    // const message = body.view.state.values.ml_input.ml_input.value;
 
     // Check if "checkboxes-action" is present in the payload
-    const checkboxes = body.view.state.values['checkboxes-action'];
+    const checkboxes = body.view.state.values.J7gOq
     const selectedOptions = checkboxes ? checkboxes['checkboxes-action'].selected_options : [];
 
     // Extract the first selected option
     const selectedOption = selectedOptions.length > 0 ? selectedOptions[0].value : null;
+
 
     // Determine the email address based on the selected checkbox
     const emailAddress = selectedOption === 'value-0'
@@ -132,6 +131,9 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
         : selectedOption === 'value-1'
             ? 'GatewaySupport@cardknox.com'
             : null;
+
+        const subject = body.view.state.values['6P0U6'].sl_input.value;
+        const message = body.view.state.values['WGUh+'].ml_input.value;
     
     console.log("Decoded Message", message);
     

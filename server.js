@@ -85,22 +85,24 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     const subject = body.view.state.values.uik1r.sl_input.value;
     const base64encodedMessage = body.view.state.values["35GrF"].ml_input.value;
-    const message = Buffer.from(base64encodedMessage, 'base64').toString('latin1')
-    console.log("Decoded Message", message);
+
+    // Decoding the base64 message
+    const decodedMessage = Buffer.from(base64encodedMessage, 'base64').toString('utf-8');
+    console.log("Decoded Message", decodedMessage);
     
-    await sendEmail( subject, message)
+    await sendEmail(subject, decodedMessage);
     await ack();
     console.log('Acknowledged view submission', body);
 });
 
-
-
-async function sendEmail(subject, message){
-
+async function sendEmail(subject, message) {
     console.log('Subject:', subject);
     console.log('My Message:', message);
 
-   const transporter =  nodemailer.createTransport({
+    // Encoding the message to base64 before sending
+    const base64Message = Buffer.from(message, 'utf-8').toString('base64');
+
+    const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
@@ -108,17 +110,18 @@ async function sendEmail(subject, message){
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASSWORD,
         }
-    })
+    });
 
     const info = await transporter.sendMail({
-          from: "SlackEmail <motty6700@gmail.com>",
-          to: "techsupport@fidelitypayment.com",
-          subject:subject,
-          text: message
-    })
+        from: "SlackEmail <motty6700@gmail.com>",
+        to: "techsupport@fidelitypayment.com",
+        subject: subject,
+        text: base64Message // Sending the base64 encoded message
+    });
+
     console.log("message sent:" + info.messageId);
     console.log("Message info:", info);
-    console.log("message rejected:" + info.rejected)
+    console.log("message rejected:" + info.rejected);
 }
 
 // sendEmail().catch(console.error)

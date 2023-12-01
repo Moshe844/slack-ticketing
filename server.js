@@ -85,7 +85,8 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     const subject = body.view.state.values.uik1r.sl_input.value;
     const base64encodedMessage = body.view.state.values["35GrF"].ml_input.value;
-    const message = Buffer.from(base64encodedMessage, 'base64').toString('base64')
+    const message = Buffer.from(base64encodedMessage, 'base64').toString('utf-8')
+    console.log("Decoded Message", message);
     
     await sendEmail( subject, message)
     await ack();
@@ -113,7 +114,7 @@ async function sendEmail(subject, message){
           from: "SlackEmail <motty6700@gmail.com>",
           to: "techsupport@fidelitypayment.com",
           subject:subject,
-          text: Buffer.from(message, 'base64').toString('utf-8')
+          text: message
     })
     console.log("message sent:" + info.messageId);
     console.log("Message info:", info);

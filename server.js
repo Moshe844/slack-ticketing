@@ -85,7 +85,7 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     const subject = body.view.state.values.uik1r.sl_input.value;
     const base64encodedMessage = body.view.state.values["35GrF"].ml_input.value;
-    const message = Buffer.from(base64encodedMessage, 'base64').toString('utf-8')
+    const message = Buffer.from(base64encodedMessage, 'base64').toString('latin1')
     console.log("Decoded Message", message);
     
     await sendEmail( subject, message)

@@ -137,7 +137,7 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     
     console.log("Decoded Message", message);
     
-    await sendEmail( subject, message), emailAddress
+    await sendEmail( subject, message, emailAddress) 
     await ack();
     console.log('Acknowledged view submission', body);
 });

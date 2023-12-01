@@ -37,7 +37,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
                     {
                         "type": "input",
                         "element": {
-                            "type": "radio-buttons",
+                            "type": "radio_buttons",
                             "options": [
                                 {
                                     "text": {
@@ -56,7 +56,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
                                     "value": "value-1"
                                 },
                             ],
-                            "action_id": "radio-buttons-action"
+                            "action_id": "radio_buttons-action"
                         },
                         "label": {
                             "type": "plain_text",
@@ -119,7 +119,7 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
 
     // Check if "checkboxes-action" is present in the payload
     const radioButtons = body.view.state.values.J7gOq
-    const selectedOptions = radioButtons ? radioButtons['radio-buttons-action'].selected_options : [];
+    const selectedOptions = radioButtons ? radioButtons['radio_buttons-action'].selected_options : [];
 
     // Extract the first selected option
     const selectedOption = selectedOptions.length > 0 ? selectedOptions[0].value : null;

@@ -116,13 +116,22 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     const subject = body.view.state.values.uik1r.sl_input.value;
     const message = body.view.state.values["35GrF"].ml_input.value;
 
-    const checkboxes = body.view.state.values["checkboxes-action"]["checkboxes-action"].selected_options;
+    // const subject = body.view.state.values.sl_input.sl_input.value;
+    // const message = body.view.state.values.ml_input.ml_input.value;
 
-    const emailAddress = checkboxes[0].value === 'value-0'
-    ? 'techsupport@fidelitypayment.com'
-    : checkboxes[0].value === 'value-1'
-    ? 'GatewaySupport@cardknox.com'
-    : null
+    // Check if "checkboxes-action" is present in the payload
+    const checkboxes = body.view.state.values['checkboxes-action'];
+    const selectedOptions = checkboxes ? checkboxes['checkboxes-action'].selected_options : [];
+
+    // Extract the first selected option
+    const selectedOption = selectedOptions.length > 0 ? selectedOptions[0].value : null;
+
+    // Determine the email address based on the selected checkbox
+    const emailAddress = selectedOption === 'value-0'
+        ? 'techsupport@fidelitypayment.com'
+        : selectedOption === 'value-1'
+            ? 'GatewaySupport@cardknox.com'
+            : null;
     
     console.log("Decoded Message", message);
     

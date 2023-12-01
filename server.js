@@ -26,7 +26,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
             view: {
                 "title": {
                     "type": "plain_text",
-                    "text": "Modal Title"
+                    "text": "Submit request"
                 },
                 "submit": {
                     "type": "plain_text",
@@ -37,11 +37,41 @@ app.command('/ticket_request', async({ack, body, client})=> {
                     {
                         "type": "input",
                         "element": {
+                            "type": "checkboxes",
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "*Techinical support*",
+                                        "emoji": true
+                                    },
+                                    "value": "value-0"
+                                },
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "*Gateway support*",
+                                        "emoji": true
+                                    },
+                                    "value": "value-1"
+                                },
+                            ],
+                            "action_id": "checkboxes-action"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Choose team to request assistance.",
+                            "emoji": true
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "element": {
                             "type": "plain_text_input",
                             "action_id": "sl_input",
                             "placeholder": {
                                 "type": "plain_text",
-                                "text": "Placeholder text for single-line input"
+                                "text": "Subject...."
                             }
                         },
                         "label": {
@@ -57,7 +87,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
                             "multiline": true,
                             "placeholder": {
                                 "type": "plain_text",
-                                "text": "Placeholder text for multi-line input"
+                                "text": "Message...."
                             }
                         },
                         "label": {

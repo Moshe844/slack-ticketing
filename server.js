@@ -124,17 +124,10 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     console.log('Radio Buttons:', radioButtons);
 
     // Check if "radio_buttons-action" is present in radioButtons
-    const selectedOptions = radioButtons && radioButtons['radio_buttons-action']
-        ? radioButtons['radio_buttons-action'].selected_options
-        : [];
+    const selectedOption = radioButtons && radioButtons['radio_buttons-action']
+        ? radioButtons['radio_buttons-action'].selected_option.value
+        : null;
 
-    // Log the selectedOptions to see its structure
-    console.log('Selected Options:', selectedOptions);
-
-    // Extract the first selected option
-    const selectedOption = selectedOptions.length > 0 ? selectedOptions[0].value : null;
-
-    // Log the selectedOption to see its value
     console.log('Selected Option:', selectedOption);
 
     // Determine the email address based on the selected checkbox

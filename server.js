@@ -118,7 +118,7 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
 
 
     // Check if "checkboxes-action" is present in the payload
-    const radioButtons = body.view.state.values.J7gOq
+    const radioButtons = body.view.state.values['1rqKA']
     const selectedOptions = radioButtons ? radioButtons['radio_buttons-action'].selected_options : [];
 
     // Extract the first selected option

@@ -137,12 +137,26 @@ try{
             ? 'GatewaySupport@cardknox.com'
             : null;
 
+            // const userInfo = await client.users.info({
+            //     user: body.user.id
+            // })
+            // const username = userInfo.user.name
+            const userId = body.user.id;
+
+           
+
         const subject = body.view.state.values['LR7lr'].sl_input.value;
         const message = body.view.state.values['yybjc'].ml_input.value;
     
     console.log("Decoded Message", message);
     
     await sendEmail( subject, message, emailAddress) 
+
+    await client.chat.postEphemeral({
+        channel: userId,
+        text: 'Request has been submitted successfully!',
+        response_type: 'ephemeral',
+    });
     await ack();
     console.log('Acknowledged view submission', body);
  } catch (error){

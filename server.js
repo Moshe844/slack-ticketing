@@ -118,7 +118,7 @@ app.view('your_view_callback_id', async ({ ack, body, client }) => {
     // const message = body.view.state.values["35GrF"].ml_input.value;
 
 try{
-    const radioButtons = body.view.state.values['1rqKA'];
+    const radioButtons = body.view.state.values['ApkXa'];
 
     // Log the radioButtons to see its structure
     console.log('Radio Buttons:', radioButtons);
@@ -145,8 +145,8 @@ try{
 
            
 
-        const subject = body.view.state.values['LR7lr'].sl_input.value;
-        const message = body.view.state.values['yybjc'].ml_input.value;
+        const subject = body.view.state.values['U63NL'].sl_input.value;
+        const message = body.view.state.values['Vcq9K'].ml_input.value;
     
     console.log("Decoded Message", message);
     

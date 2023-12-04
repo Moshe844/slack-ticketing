@@ -12,7 +12,7 @@ const app = new App({
 
 const sendCommendMessage = async (channelID, text, client) => {
     try {
-        await app.client.postMessage({
+        await app.client.chat.postMessage({
             channel: channelID,
             text: text
         })

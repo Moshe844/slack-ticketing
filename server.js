@@ -153,20 +153,13 @@ try{
     await sendEmail( subject, message, emailAddress) 
     await ack();
 
-    // const channelID = body.channel && body.channel.id ? body.channel.id : body.user.id;
-    // const successMessage = await client.chat.postEphemeral({
-    //     text: 'Your request has been submitted successfully!',
-    //     user: body.user.id,
-    //     channel: channelID
-    // })
-    const information = await app.client.views.open({
-        trigger_id: body.trigger_id,
-        view:{
-            type: 'ephemeral',
-            text: 'Your request has been submitted successfully'
-        }
+    const channelID = body.channel && body.channel.id ? body.channel.id : body.user.id;
+    const successMessage = await client.chat.postEphemeral({
+        text: 'Your request has been submitted successfully!',
+        user: body.user.id,
+        channel: channelID
     })
-    console.log('Success Message:', information);
+    console.log('Success Message:', successMessage);
     console.log('Acknowledged view submission', body);
  } catch (error){
         console.error(error)

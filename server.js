@@ -17,7 +17,11 @@ const app = new App({
 
 app.command('/ticket_request', async({ack, body, client})=> {
     try{
-     await ack();
+     await ack({
+        response_action: 'ack',
+       ack_timeout: 3000,
+     });
+      
      console.log(body.trigger_id);
      
         const result = await client.views.open({
@@ -116,8 +120,7 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     // const subject = body.view.state.values.uik1r.sl_input.value;
     // const message = body.view.state.values["35GrF"].ml_input.value;
 
-
-    // Check if "checkboxes-action" is present in the payload
+try{
     const radioButtons = body.view.state.values['1rqKA'];
 
     // Log the radioButtons to see its structure
@@ -145,6 +148,11 @@ app.view('your_view_callback_id', async ({ ack, body }) => {
     await sendEmail( subject, message, emailAddress) 
     await ack();
     console.log('Acknowledged view submission', body);
+ } catch (error){
+        console.error(error)
+    }
+
+    // Check if "checkboxes-action" is present in the payload
 });
 
 

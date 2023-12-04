@@ -151,14 +151,13 @@ try{
     console.log("Decoded Message", message);
     
     await sendEmail( subject, message, emailAddress) 
-
-   const successMessage =  await client.chat.postEphemeral({
-        channel: userId,
-        text: 'Request has been submitted successfully!',
-        response_type: 'ephemeral',
-    });
-
     await ack();
+
+    const successMessage = await client.chat.postEphemeral({
+        text: 'Your request has been submitted successfully!',
+        user: body.user.id,
+        channel: body.user.id
+    })
     console.log('Success Message:', successMessage);
     console.log('Acknowledged view submission', body);
  } catch (error){

@@ -20,7 +20,8 @@ app.event('app_home_opened', async ({ event, client }) => {
         const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
         
         await client.chat.postEphemeral({
-            channel: event.user,
+            channel: channelID,
+            user: event.user,
             text: commandMessage,
         });
 

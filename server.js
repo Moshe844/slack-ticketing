@@ -12,21 +12,26 @@ const app = new App({
 const channelID = 'CDV45R12B';
 const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
 
-app.event('app_home_opened', async({event, client})=> {
-    if(event.channel === channelID){
+app.event('app_home_opened', async ({ event, client }) => {
+    try {
+      if (event.channel === channelID) {
         await client.chat.postEphemeral({
-            channel: event.user,
-            text: commandMessage
-        })
+          channel: event.user,
+          text: commandMessage,
+        });
+      }
+    } catch (error) {
+      console.error('Error handling app_home_opened event:', error);
     }
-})
-
+  });
 
 
 (async () => {
     await app.start(process.env.PORT || 3000);
     console.log('⚡️ Bolt app is running!');
 })()
+
+
 
 app.command('/ticket_request', async({ack, body, client})=> {
     try{

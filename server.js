@@ -112,7 +112,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
      }
 })
 
-app.view('your_view_callback_id', async ({ ack, body, context }) => {
+app.view('your_view_callback_id', async ({ ack, body, client }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     // const subject = body.view.state.values.uik1r.sl_input.value;
     // const message = body.view.state.values["35GrF"].ml_input.value;
@@ -153,7 +153,7 @@ try{
     await sendEmail( subject, message, emailAddress) 
     await ack();
 
-    const successMessage = await context.client.chat.postEphemeral({
+    const successMessage = await client.chat.postEphemeral({
         text: 'Your request has been submitted successfully!',
         user: body.user.id,
         channel: body.user.id

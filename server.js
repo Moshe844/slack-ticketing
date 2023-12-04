@@ -17,10 +17,7 @@ const app = new App({
 
 app.command('/ticket_request', async({ack, body, client})=> {
     try{
-     await ack({
-        response_action: 'ack',
-       ack_timeout: 3000,
-     });
+     await ack();
       
      console.log(body.trigger_id);
      
@@ -175,7 +172,7 @@ async function sendEmail(subject, message, emailAddress){
     })
 
     const info = await transporter.sendMail({
-          from: "SlackEmail <motty6700@gmail.com>",
+          from: "SlackEmail <devagent@cardknox.com>",
           to: emailAddress,
           subject:subject,
           text: message

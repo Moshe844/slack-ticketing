@@ -10,11 +10,12 @@ const app = new App({
 });
 // console.log('SLACK_SIGNING_SECRET:', process.env.SLACK_SIGNING_SECRET);
 
-const sendCommendMessage = async (channelID, text, client) => {
+const sendCommendMessage = async (channelID, text, user) => {
     try {
         await app.client.chat.postEphemeral({
             channel: channelID,
-            text: text
+            text: text,
+            user: user
         })
     } catch (error) {
         console.error('Error sending message:', error);
@@ -24,9 +25,10 @@ const sendCommendMessage = async (channelID, text, client) => {
 
 (async () => {
     const channelID = 'CDV45R12B';
+    const userWhoOpenedChanel = body.user.id
     const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
 
-    await sendCommendMessage(channelID, commandMessage)
+    await sendCommendMessage(channelID, userWhoOpenedChanel, commandMessage)
     await app.start(process.env.PORT || 3000);
     console.log('⚡️ Bolt app is running!');
 })()

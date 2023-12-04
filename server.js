@@ -9,10 +9,12 @@ const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
 });
 // console.log('SLACK_SIGNING_SECRET:', process.env.SLACK_SIGNING_SECRET);
-const channelID = 'CDV45R12B';
-const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
 
-app.event('app_home_opened', async ({ event, client }) => {
+
+app.event('message.channels', async ({ event, client }) => {
+
+    const channelID = 'CDV45R12B';
+    const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
     try {
       console.log('Received app_home_opened event:', event);
       if (event.channel === channelID) {

@@ -43,7 +43,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
                                 {
                                     "text": {
                                         "type": "plain_text",
-                                        "text": "*Techinical support*",
+                                        "text": "*Technical support*",
                                         "emoji": true
                                     },
                                     "value": "value-0"
@@ -141,7 +141,7 @@ try{
             //     user: body.user.id
             // })
             // const username = userInfo.user.name
-            const userId = body.user.id;
+            // const userId = body.user.id;
 
            
 
@@ -153,13 +153,20 @@ try{
     await sendEmail( subject, message, emailAddress) 
     await ack();
 
-    const channelID = body.channel && body.channel.id ? body.channel.id : body.user.id;
-    const successMessage = await client.chat.postEphemeral({
-        text: 'Your request has been submitted successfully!',
-        user: body.user.id,
-        channel: channelID
+    // const channelID = body.channel && body.channel.id ? body.channel.id : body.user.id;
+    // const successMessage = await client.chat.postEphemeral({
+    //     text: 'Your request has been submitted successfully!',
+    //     user: body.user.id,
+    //     channel: channelID
+    // })
+    const information = await app.client.views.open({
+        trigger_id: body.trigger_id,
+        view:{
+            type: 'ephemeral',
+            text: 'Your request has been submitted successfully'
+        }
     })
-    console.log('Success Message:', successMessage);
+    console.log('Success Message:', information);
     console.log('Acknowledged view submission', body);
  } catch (error){
         console.error(error)

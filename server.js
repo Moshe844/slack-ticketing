@@ -12,24 +12,27 @@ const app = new App({
 
 
 
-app.event('app_home_opened', async ({ event, client }) => {
-    try {
-        console.log('Received app_home_opened event:', event);
+const channelID = 'CDV45R12B'; // Replace with the actual channel ID
+const commandMessage = 'To submit a ticket, use the command `/ticket-request` when in this channel.';
 
-        const channelID = 'CDV45R12B';
-        const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
-        
-        await client.chat.postEphemeral({
-            channel: channelID,
-            user: event.user,
-            text: commandMessage,
-        });
+app.event('app_mention', async ({ event, client }) => {
+    try {
+        console.log('Received app_mention event:', event);
+
+        if (event.channel === channelID) {
+            // Check if the mention is in the specified channel
+            await client.chat.postEphemeral({
+                channel: event.channel,
+                user: event.user,
+                text: commandMessage,
+            });
+            console.log('Message sent successfully.');
+        }
 
     } catch (error) {
-        console.error('Error handling app_home_opened event:', error);
+        console.error('Error handling app_mention event:', error);
     }
 });
-
 
 (async () => {
     await app.start(process.env.PORT || 3000);

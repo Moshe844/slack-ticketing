@@ -156,7 +156,7 @@ try{
     const successMessage = await client.chat.postEphemeral({
         text: 'Your request has been submitted successfully!',
         user: body.user.id,
-        channel: body.user.id
+        channel: body.channel.id
     })
     console.log('Success Message:', successMessage);
     console.log('Acknowledged view submission', body);

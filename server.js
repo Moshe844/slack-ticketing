@@ -10,7 +10,23 @@ const app = new App({
 });
 // console.log('SLACK_SIGNING_SECRET:', process.env.SLACK_SIGNING_SECRET);
 
+const sendCommendMessage = async (channelID, text, client) => {
+    try {
+        await app.client.postMessage({
+            channel: channelID,
+            text: text
+        })
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+};
+
+
 (async () => {
+    const channelID = 'CDV45R12B';
+    const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
+
+    await sendCommendMessage(channelID, commandMessage)
     await app.start(process.env.PORT || 3000);
     console.log('⚡️ Bolt app is running!');
 })()
@@ -197,5 +213,6 @@ async function sendEmail(subject, message, emailAddress){
     console.log("Message info:", info);
     console.log("message rejected:" + info.rejected)
 }
+
 
 // sendEmail().catch(console.error)

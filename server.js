@@ -153,7 +153,7 @@ try{
     await sendEmail( subject, message, emailAddress) 
     await ack();
 
-    const channelID = body.channel && body.channel.id ? body.channel.id : null
+    const channelID = body.channel && body.channel.id ? body.channel.id : body.user.id;
     const successMessage = await client.chat.postEphemeral({
         text: 'Your request has been submitted successfully!',
         user: body.user.id,

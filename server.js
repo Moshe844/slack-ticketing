@@ -12,7 +12,7 @@ const app = new App({
 
 const sendCommendMessage = async (channelID, text, client) => {
     try {
-        await app.client.chat.postMessage({
+        await app.client.chat.postEphemeral({
             channel: channelID,
             text: text
         })

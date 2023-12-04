@@ -112,7 +112,7 @@ app.command('/ticket_request', async({ack, body, client})=> {
      }
 })
 
-app.view('your_view_callback_id', async ({ ack, body }) => {
+app.view('your_view_callback_id', async ({ ack, body, context }) => {
     console.log('View Submission Payload:', JSON.stringify(body, null));
     // const subject = body.view.state.values.uik1r.sl_input.value;
     // const message = body.view.state.values["35GrF"].ml_input.value;

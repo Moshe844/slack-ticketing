@@ -165,9 +165,9 @@ async function sendEmail(subject, message, emailAddress){
     // const base64encodedMessage = Buffer.from(message,  'base64').toString('utf-8')
 
    const transporter =  nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        host: 'smtp.office365.com',
+        port: 587,
+        secure: false,
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASSWORD,

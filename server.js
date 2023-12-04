@@ -11,25 +11,23 @@ const app = new App({
 // console.log('SLACK_SIGNING_SECRET:', process.env.SLACK_SIGNING_SECRET);
 
 
-app.event('app_home_opened', async ({ event, client }) => {
 
-    const channelID = 'CDV45R12B';
-    const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
+app.event('app_home_opened', async ({ event, client }) => {
     try {
-      console.log('Received app_home_opened event:', event);
-      if (event.channel === channelID) {
-        console.log('Channel ID matches. Sending message.');
+        console.log('Received app_home_opened event:', event);
+
+        const channelID = 'CDV45R12B';
+        const commandMessage = 'To submit a ticket, use the command `/ticket-request`.';
+        
         await client.chat.postEphemeral({
-          channel: event.user,
-          text: commandMessage,
+            channel: event.user,
+            text: commandMessage,
         });
-      } else {
-        console.log('Channel ID does not match.');
-      }
+
     } catch (error) {
-      console.error('Error handling app_home_opened event:', error);
+        console.error('Error handling app_home_opened event:', error);
     }
-  });
+});
 
 
 (async () => {

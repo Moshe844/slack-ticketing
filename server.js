@@ -16,7 +16,7 @@ const channelID = 'CDV45R12B'; // Replace with the actual channel ID
 
 
 app.message(async ({ message, say }) => {
-    if (message.channel === channelID && message.user === message.subscribed_user_id) {
+    if (message.channel === channelID && message.user === message.user) {
         try {
             await say({
                 channel: message.user,

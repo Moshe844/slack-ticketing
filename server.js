@@ -12,17 +12,16 @@ const app = new App({
 
 
 
-app.event('app_home_opened', async ({ event, say }) => {
-    // Check if the event is for the desired channel
-    if (event.tab === 'messages' && event.channel === 'C01MVPG88TA') {
+app.message(async ({ message, say }) => {
+    // Check if the message is in the desired channel
+    if (message.channel === 'C01MVPG88TA') {
       // Send the message to the channel
       await say({
-        channel: event.channel,
+        channel: message.channel,
         text: 'To submit a ticket, use the command `/ticket-request`',
       });
     }
   });
-
 (async () => {
     await app.start(process.env.PORT || 3000);
     console.log('⚡️ Bolt app is running!');

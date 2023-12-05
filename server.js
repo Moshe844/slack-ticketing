@@ -12,20 +12,31 @@ const app = new App({
 
 
 
-app.message(async ({ message, say }) => {
-    // Check if the message is in the desired channel
-    if (message.channel === 'C01MVPG88TA') {
-      // Send the message to the channel
-      await say({
-        channel: message.channel,
-        text: 'To submit a ticket, use the command `/ticket-request`',
+const sendCommandMessage = async (channelId, text) => {
+    try {
+      await app.client.chat.postMessage({
+        channel: channelId,
+        text: text,
       });
+    } catch (error) {
+      console.error(`Error sending message to channel ${channelId}:`, error);
     }
-  });
-(async () => {
+  };
+  
+  // Start your app
+  (async () => {
+    // Replace these with your actual channel IDs
+    const channelIds = ['C01MVPG88TA'];
+    const commandMessage = "To submit a ticket, use the command `/ticket-request`.";
+  
+    // Send a message to each channel
+    for (const channelId of channelIds) {
+      await sendCommandMessage(channelId, commandMessage);
+    }
+  
     await app.start(process.env.PORT || 3000);
     console.log('⚡️ Bolt app is running!');
-})()
+  })();
 
 
 

@@ -15,20 +15,18 @@ const app = new App({
 const channelID = 'CDV45R12B'; // Replace with the actual channel ID
 
 
-app.message(async ({message, client})=> {
-    if(message.channel === channelID){
-       if(message.user === message.subscribed_user_id){
+app.message(async ({ message, say }) => {
+    if (message.channel === channelID && message.user === message.subscribed_user_id) {
         try {
-            await client.chat.postMessage({
+            await say({
                 channel: message.user,
                 text: "To submit a ticket, use the command `/ticket-request` when in this channel.",
-            })
+            });
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-       }
     }
-})
+});
 
 (async () => {
     await app.start(process.env.PORT || 3000);

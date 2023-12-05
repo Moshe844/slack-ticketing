@@ -12,23 +12,16 @@ const app = new App({
 
 
 
-const channelID = 'C03DJ62D281';
-
-app.event('app_home_opened', async ({ event, context }) => {
-    try {
-        // Check if the event corresponds to the desired channel
-        if (event.channel === channelID) {
-            // Send a message with the pre-filled slash command
-            await app.client.chat.postMessage({
-                token: context.botToken,
-                channel: event.channel,
-                text: "To submit a ticket, use the command `/ticket-request` when in this channel.",
-            });
-        }
-    } catch (error) {
-        console.error(error);
+app.event('app_home_opened', async ({ event, say }) => {
+    // Check if the event is for the desired channel
+    if (event.tab === 'messages' && event.channel === 'C01MVPG88TA') {
+      // Send the message to the channel
+      await say({
+        channel: event.channel,
+        text: 'To submit a ticket, use the command `/ticket-request`',
+      });
     }
-});
+  });
 
 (async () => {
     await app.start(process.env.PORT || 3000);

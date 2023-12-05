@@ -12,19 +12,21 @@ const app = new App({
 
 
 
-const channelID = 'CDV45R12B'; // Replace with the actual channel ID
+const channelID = 'C03DJ62D281';
 
-
-app.message(async ({ message, say }) => {
-    if (message.channel === channelID && message.user === message.user) {
-        try {
-            await say({
-                channel: message.user,
+app.event('app_home_opened', async ({ event, context }) => {
+    try {
+        // Check if the event corresponds to the desired channel
+        if (event.channel === channelID) {
+            // Send a message with the pre-filled slash command
+            await app.client.chat.postMessage({
+                token: context.botToken,
+                channel: event.channel,
                 text: "To submit a ticket, use the command `/ticket-request` when in this channel.",
             });
-        } catch (error) {
-            console.error(error);
         }
+    } catch (error) {
+        console.error(error);
     }
 });
 

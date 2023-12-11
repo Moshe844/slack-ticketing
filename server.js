@@ -2,11 +2,16 @@
 require('dotenv').config();
 const nodemailer = require("nodemailer")
 const { App } = require('@slack/bolt');
+const {FileInstallationStore} = require('@slack/oauth')
 
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
-    token: process.env.SLACK_BOT_TOKEN,
+    clientId: process.env.SLACK_CLIENT_ID,
+    clientSecret: process.env.SLACK_CLIENT_SECRET,
+    stateSecret: process.env.SLACK_STATE_CODE,
+    scopes: ["app_mentions:read ", "chat:write ", "commands"],
+    installationStore: new FileInstallationStore()
 });
 // console.log('SLACK_SIGNING_SECRET:', process.env.SLACK_SIGNING_SECRET);
 

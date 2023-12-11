@@ -1,36 +1,49 @@
 
 require('dotenv').config();
 const nodemailer = require("nodemailer")
-const { App } = require('@slack/bolt');
-const {FileInstallationStore} = require('@slack/oauth')
+const { App, ExpressReceiver } = require('@slack/bolt');
+const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
 
-
+const expressReceiver = new ExpressReceiver({signingSecret: process.env.SLACK_SIGNING_SECRET})
 const app = new App({
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
+    token: process.env.SLACK_BOT_TOKEN,
+    receiver: expressReceiver
+});
+
+
+(async () => {
+    try {
+      await app.start(process.env.PORT || 3000);
+      console.log('⚡️ Bolt app is running!');
+    
+      // Trigger OAuth installation initiation
+      const url = await installProvider.generateInstallUrl({
+        scopes: ['app_mentions:read', 'chat:write', 'commands'],
+      });
+      console.log(`Visit this URL to install the app: ${url}`);
+    } catch (error) {
+      console.error('Error starting Bolt app:', error);
+    }
+  })();
+ 
+const installationStore = new FileInstallationStore({
+    client_id: process.env.SLACK_CLIENT_ID,
+    client_secret: process.env.SLACK_CLIENT_SECRET,
+    stateSecret: process.env.SLACK_STATE_SECRET,
+    installationStorePath: 'installations.json',
+  });
+
+  const installProvider = new InstallProvider({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_CODE,
-    scopes: ["app_mentions:read ", "chat:write ", "commands"],
-    installationStore: new FileInstallationStore()
-});
-// console.log('SLACK_SIGNING_SECRET:', process.env.SLACK_SIGNING_SECRET);
-
-
-
-// app.message(async ({ message, say }) => {
+    authVersion: 'v2',
+    installationStore,
     
-//     if (message.channel === 'C01MVPG88TA') {
-    
-//       await say({
-//         channel: message.channel,
-//         text: 'To submit a ticket, use the command `/ticket-request`',
-//       });
-//     }
-//   });
-(async () => {
-    await app.start(process.env.PORT || 3000);
-    console.log('⚡️ Bolt app is running!');
-})()
+  })
+
+
+
 
 
 
@@ -219,3 +232,4 @@ async function sendEmail(subject, message, emailAddress){
 
 
 // sendEmail().catch(console.error)
+

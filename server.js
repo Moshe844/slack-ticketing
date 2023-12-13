@@ -43,6 +43,14 @@ const installationStore = new FileInstallationStore({
   })
 
 
+  expressReceiver.router.post('/slack/events', async (req, res) => {
+    try {
+        await app.receiver.handleRequest(req, res);
+    } catch (error) {
+        console.error('Error handling Slack events:', error);
+        res.status(500).send('Internal Server Error');
+    }
+  })
 
 
 

@@ -29,6 +29,7 @@ const app = new App({
       const url = await installProvider.generateInstallUrl({
         scopes: ['app_mentions:read', 'chat:write', 'commands'],
         redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
+        installPath: '/slack/install',
       });
       const generatedState = url.match(/state=([^&]*)/);
         console.log('Generated state:', generatedState && generatedState[1]);

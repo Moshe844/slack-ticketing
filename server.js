@@ -57,10 +57,17 @@ const installationStore = new FileInstallationStore({
 });
 
 // Route for handling OAuth redirects
+// Route for handling OAuth redirects
 expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
     try {
-        const recieveState = req.query.state
-        console.log('Received state:', recieveState)
+        const recieveState = req.query.state;
+        console.log('Received state:', recieveState);
+
+        // Log additional information for debugging
+        console.log('Query parameters:', req.query);
+        console.log('SessionID:', req.sessionID);
+        console.log('Session:', req.session);
+
         const result = await installProvider.handleCallback(req, res);
         res.json(result);
     } catch (error) {
@@ -68,6 +75,7 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 
 

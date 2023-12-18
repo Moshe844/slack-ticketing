@@ -50,8 +50,18 @@ const installationStore = new FileInstallationStore({
         console.error('Error handling Slack events:', error);
         res.status(500).send('Internal Server Error');
     }
-  })
+});
 
+// Route for handling OAuth redirects
+expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
+    try {
+        const result = await installProvider.handleCallback(req, res);
+        res.json(result);
+    } catch (error) {
+        console.error('Error handling OAuth redirect:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 
 

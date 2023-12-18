@@ -33,7 +33,7 @@ const app = new App({
 const installationStore = new FileInstallationStore({
     client_id: process.env.SLACK_CLIENT_ID,
     client_secret: process.env.SLACK_CLIENT_SECRET,
-    stateSecret: process.env.SLACK_STATE_SECRET,
+    stateSecret: process.env.SLACK_STATE_CODE,
     installationStorePath: 'installations.json',
   });
 

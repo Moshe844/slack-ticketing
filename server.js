@@ -1,10 +1,19 @@
 
 require('dotenv').config();
 const nodemailer = require("nodemailer")
+const session = require('express-session');
 const { App, ExpressReceiver } = require('@slack/bolt');
 const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
 
 const expressReceiver = new ExpressReceiver({signingSecret: process.env.SLACK_SIGNING_SECRET})
+
+expressReceiver.app.use(
+    session({
+      secret: process.env.SESSION_ID,
+      resave: true,
+      saveUninitialized: true,
+    })
+)
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     receiver: expressReceiver

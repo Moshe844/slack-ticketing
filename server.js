@@ -19,7 +19,11 @@ const app = new App({
       // Trigger OAuth installation initiation
       const url = await installProvider.generateInstallUrl({
         scopes: ['app_mentions:read', 'chat:write', 'commands'],
+        redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
       });
+      const generatedState = url.match(/state=([^&]*)/);
+        console.log('Generated state:', generatedState && generatedState[1]);
+
       console.log(`Visit this URL to install the app: ${url}`);
     } catch (error) {
       console.error('Error starting Bolt app:', error);
@@ -55,6 +59,8 @@ const installationStore = new FileInstallationStore({
 // Route for handling OAuth redirects
 expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
     try {
+        const recieveState = req.query.state
+        console.log('Received state:', recieveState)
         const result = await installProvider.handleCallback(req, res);
         res.json(result);
     } catch (error) {

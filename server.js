@@ -77,6 +77,8 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
 // ...
 
 
+// ...
+
 (async () => {
     try {
       await app.start(process.env.PORT || 3000);
@@ -88,14 +90,16 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
         redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
        
       });
-       generatedState = url.match(/state=([^&]*)/)[1];
-        console.log('Generated state:', generatedState && generatedState[1]);
+      const matchResult = url.match(/state=([^&]*)/);
+      generatedState = matchResult ? matchResult[1] : null; // Extract the captured group or set to null if not found
+      console.log('Generated state:', generatedState);
 
       console.log(`Visit this URL to install the app: ${url}`);
     } catch (error) {
       console.error('Error starting Bolt app:', error);
     }
-  })();
+})();
+
  
 
 

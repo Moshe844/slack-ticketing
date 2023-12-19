@@ -29,7 +29,7 @@ const app = new App({
       const url = await installProvider.generateInstallUrl({
         scopes: ['app_mentions:read', 'chat:write', 'commands'],
         redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
-        installPath: '/slack/install',
+       
       });
       const generatedState = url.match(/state=([^&]*)/);
         console.log('Generated state:', generatedState && generatedState[1]);
@@ -78,7 +78,7 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
         console.log('SessionID:', req.sessionID);
         console.log('Session:', req.session);
 
-        const result = await installProvider.handleCallback(req, res);
+        const result = await installProvider.handleCallback(req, res, {state: recieveState});
         res.json(result);
     } catch (error) {
         console.error('Error handling OAuth redirect:', error);

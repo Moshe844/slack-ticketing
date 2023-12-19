@@ -41,16 +41,16 @@ const app = new App({
   })();
  
 const installationStore = new FileInstallationStore({
-    client_id: process.env.SLACK_CLIENT_ID,
-    client_secret: process.env.SLACK_CLIENT_SECRET,
-    stateSecret: 'c15ca8db85aeb3c1e3e46e336d9113c889e04cac54f3235959dcd05db9afc40d',
+    clientId: process.env.SLACK_CLIENT_ID,
+    clientSecret: process.env.SLACK_CLIENT_SECRET,
+    stateSecret: process.env.SLACK_STATE_SECRET,
     installationStorePath: 'installations.json',
   });
 
   const installProvider = new InstallProvider({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
-    stateSecret: 'c15ca8db85aeb3c1e3e46e336d9113c889e04cac54f3235959dcd05db9afc40d',
+    stateSecret: process.env.SLACK_STATE_SECRET,
     authVersion: 'v2',
     installationStore,
     
@@ -70,21 +70,28 @@ const installationStore = new FileInstallationStore({
 // Route for handling OAuth redirects
 expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
     try {
-        const recieveState = req.query.state;
-        console.log('Received state:', recieveState);
+        const receivedState = req.query.state;
+        console.log('Received state:', receivedState);
 
-        // Log additional information for debugging
-        console.log('Query parameters:', req.query);
-        console.log('SessionID:', req.sessionID);
-        console.log('Session:', req.session);
+        // Get the generated state from the session or wherever you stored it
+        const generatedState = req.session.generatedState; // Adjust this based on your session storage
 
-        const result = await installProvider.handleCallback(req, res);
-        res.json(result);
+        // Compare receivedState with the one you generated
+        if (receivedState === generatedState) {
+            // States match, proceed with OAuth callback handling
+            const result = await installProvider.handleCallback(req, res);
+            res.json(result);
+        } else {
+            // States do not match, log an error or handle it as needed
+            console.error('OAuth states do not match. Potential CSRF attack.');
+            res.status(400).send('OAuth states do not match. Potential CSRF attack.');
+        }
     } catch (error) {
         console.error('Error handling OAuth redirect:', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 
 

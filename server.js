@@ -68,29 +68,40 @@ const installationStore = new FileInstallationStore({
 
 // Route for handling OAuth redirects
 // Route for handling OAuth redirects
+// ...
+
 expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
     try {
         const receivedState = req.query.state;
         console.log('Received state:', receivedState);
 
         // Get the generated state from the session or wherever you stored it
-        const generatedState = req.session.generatedState; // Adjust this based on your session storage
+        const generatedState = req.session ? req.session.generatedState : null; // Check if session is available
 
-        // Compare receivedState with the one you generated
-        if (receivedState === generatedState) {
-            // States match, proceed with OAuth callback handling
-            const result = await installProvider.handleCallback(req, res);
-            res.json(result);
+        if (generatedState) {
+            // Compare receivedState with the one you generated
+            if (receivedState === generatedState) {
+                // States match, proceed with OAuth callback handling
+                const result = await installProvider.handleCallback(req, res);
+                res.json(result);
+            } else {
+                // States do not match, log an error or handle it as needed
+                console.error('OAuth states do not match. Potential CSRF attack.');
+                res.status(400).send('OAuth states do not match. Potential CSRF attack.');
+            }
         } else {
-            // States do not match, log an error or handle it as needed
-            console.error('OAuth states do not match. Potential CSRF attack.');
-            res.status(400).send('OAuth states do not match. Potential CSRF attack.');
+            // Handle the case where generatedState is not found in the session
+            console.error('Generated state not found in session.');
+            res.status(400).send('Generated state not found in session.');
         }
     } catch (error) {
         console.error('Error handling OAuth redirect:', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
+// ...
+
 
 
 

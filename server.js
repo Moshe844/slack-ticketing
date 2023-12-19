@@ -43,14 +43,14 @@ const app = new App({
 const installationStore = new FileInstallationStore({
     client_id: process.env.SLACK_CLIENT_ID,
     client_secret: process.env.SLACK_CLIENT_SECRET,
-    stateSecret: process.env.SLACK_STATE_CODE,
+    stateSecret: 'c15ca8db85aeb3c1e3e46e336d9113c889e04cac54f3235959dcd05db9afc40d',
     installationStorePath: 'installations.json',
   });
 
   const installProvider = new InstallProvider({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
-    stateSecret: process.env.SLACK_STATE_CODE,
+    stateSecret: 'c15ca8db85aeb3c1e3e46e336d9113c889e04cac54f3235959dcd05db9afc40d',
     authVersion: 'v2',
     installationStore,
     
@@ -78,7 +78,7 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
         console.log('SessionID:', req.sessionID);
         console.log('Session:', req.session);
 
-        const result = await installProvider.handleCallback(req, res, {state: recieveState});
+        const result = await installProvider.handleCallback(req, res);
         res.json(result);
     } catch (error) {
         console.error('Error handling OAuth redirect:', error);

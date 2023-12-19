@@ -88,7 +88,7 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
         redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
        
       });
-      const generatedState = url.match(/state=([^&]*)/);
+       generatedState = url.match(/state=([^&]*)/);
         console.log('Generated state:', generatedState && generatedState[1]);
 
       console.log(`Visit this URL to install the app: ${url}`);

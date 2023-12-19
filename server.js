@@ -20,26 +20,7 @@ const app = new App({
 });
 
 
-(async () => {
-    try {
-      await app.start(process.env.PORT || 3000);
-      console.log('⚡️ Bolt app is running!');
-    
-      // Trigger OAuth installation initiation
-      const url = await installProvider.generateInstallUrl({
-        scopes: ['app_mentions:read', 'chat:write', 'commands'],
-        redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
-       
-      });
-      const generatedState = url.match(/state=([^&]*)/);
-        console.log('Generated state:', generatedState && generatedState[1]);
 
-      console.log(`Visit this URL to install the app: ${url}`);
-    } catch (error) {
-      console.error('Error starting Bolt app:', error);
-    }
-  })();
- 
 const installationStore = new FileInstallationStore({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
@@ -70,29 +51,22 @@ const installationStore = new FileInstallationStore({
 // Route for handling OAuth redirects
 // ...
 
+let generatedState; // Variable to store the generated state
+
 expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
     try {
         const receivedState = req.query.state;
         console.log('Received state:', receivedState);
 
-        // Get the generated state from the session or wherever you stored it
-        const generatedState = req.session ? req.session.generatedState : null; // Check if session is available
-
-        if (generatedState) {
-            // Compare receivedState with the one you generated
-            if (receivedState === generatedState) {
-                // States match, proceed with OAuth callback handling
-                const result = await installProvider.handleCallback(req, res);
-                res.json(result);
-            } else {
-                // States do not match, log an error or handle it as needed
-                console.error('OAuth states do not match. Potential CSRF attack.');
-                res.status(400).send('OAuth states do not match. Potential CSRF attack.');
-            }
+        // Compare receivedState with the one you generated
+        if (receivedState === generatedState) {
+            // States match, proceed with OAuth callback handling
+            const result = await installProvider.handleCallback(req, res);
+            res.json(result);
         } else {
-            // Handle the case where generatedState is not found in the session
-            console.error('Generated state not found in session.');
-            res.status(400).send('Generated state not found in session.');
+            // States do not match, log an error or handle it as needed
+            console.error('OAuth states do not match. Potential CSRF attack.');
+            res.status(400).send('OAuth states do not match. Potential CSRF attack.');
         }
     } catch (error) {
         console.error('Error handling OAuth redirect:', error);
@@ -103,7 +77,26 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
 // ...
 
 
+(async () => {
+    try {
+      await app.start(process.env.PORT || 3000);
+      console.log('⚡️ Bolt app is running!');
+    
+      // Trigger OAuth installation initiation
+      const url = await installProvider.generateInstallUrl({
+        scopes: ['app_mentions:read', 'chat:write', 'commands'],
+        redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
+       
+      });
+      const generatedState = url.match(/state=([^&]*)/);
+        console.log('Generated state:', generatedState && generatedState[1]);
 
+      console.log(`Visit this URL to install the app: ${url}`);
+    } catch (error) {
+      console.error('Error starting Bolt app:', error);
+    }
+  })();
+ 
 
 
 

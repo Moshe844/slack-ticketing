@@ -43,6 +43,9 @@ const app = new App({
     installationStore,
 });
 
+app.installationStore = installationStore;
+app.installProvider = installProvider;
+
 
 
 

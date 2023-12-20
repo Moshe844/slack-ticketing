@@ -8,13 +8,6 @@ const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
 
 const expressReceiver = new ExpressReceiver({signingSecret: process.env.SLACK_SIGNING_SECRET})
 
-expressReceiver.app.use(
-    session({
-      secret: process.env.SESSION_ID,
-      resave: true,
-      saveUninitialized: true,
-    })
-)
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     receiver: expressReceiver
@@ -38,6 +31,13 @@ const installationStore = new FileInstallationStore({
     
   })
 
+  const sessionMiddleware = session({
+    secret: process.env.SESSION_ID,
+    resave: true,
+    saveUninitialized: true,
+  });
+  
+  expressReceiver.app.use(sessionMiddleware);
 
   expressReceiver.router.post('/slack/events', async (req, res) => {
     try {

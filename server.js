@@ -1,6 +1,7 @@
 
 require('dotenv').config();
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 const session = require('express-session');
 const { App, ExpressReceiver } = require('@slack/bolt');
 const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
@@ -56,8 +57,14 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
       const receivedState = req.query.state;
       console.log('Received state:', receivedState);
   
+      const generatedState = Math.random().toString(36).substring(7);
+      const generatedStateHash = crypto
+        .createHmac('sha256', process.env.SLACK_STATE_SECRET)
+        .update(generatedState)
+        .digest('hex')
+     
       // Compare receivedState with the one you generated
-      if (installProvider.verifyStateParam(receivedState)) {
+      if (receivedState === generatedStateHash) {
         // States match, proceed with OAuth callback handling
         const result = await installProvider.handleCallback(req, res);
         res.json(result);
@@ -86,7 +93,7 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
       const url = await installProvider.generateInstallUrl({
         scopes: ['app_mentions:read', 'chat:write', 'commands'],
         redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
-
+       
         
        
       });

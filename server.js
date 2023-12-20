@@ -8,6 +8,13 @@ const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
 
 const expressReceiver = new ExpressReceiver({signingSecret: process.env.SLACK_SIGNING_SECRET})
 
+expressReceiver.app.use(
+    session({
+      secret: process.env.SESSION_ID,
+      resave: true,
+      saveUninitialized: true,
+    })
+)
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     receiver: expressReceiver
@@ -31,13 +38,6 @@ const installationStore = new FileInstallationStore({
     
   })
 
-  const sessionMiddleware = session({
-    secret: process.env.SESSION_ID,
-    resave: true,
-    saveUninitialized: true,
-  });
-  
-  expressReceiver.app.use(sessionMiddleware);
 
   expressReceiver.router.post('/slack/events', async (req, res) => {
     try {
@@ -59,6 +59,7 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
   
       // Retrieve stored state from the session
       const storedState = req.session.installationState;
+      console.log('Stored state:', storedState);
   
       // Compare receivedState with the one stored in the session
       if (receivedState === storedState) {
@@ -76,31 +77,34 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
     }
   });
   
-  // Start the Bolt app
-  (async () => {
+
+// ...
+
+
+// ...
+
+(async () => {
     try {
       await app.start(process.env.PORT || 3000);
       console.log('⚡️ Bolt app is running!');
-  
+    
       // Trigger OAuth installation initiation
-      const generatedState = Math.random().toString(36).substring(7);
-  
-      // Store the generated state in the session
-      expressReceiver.app.use((req, res, next) => {
-        req.session.installationState = generatedState;
-        next();
-      });
-  
       const url = await installProvider.generateInstallUrl({
         scopes: ['app_mentions:read', 'chat:write', 'commands'],
         redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
+       
+        
+       
       });
-  
+      const matchResult = url.match(/state=([^&]*)/);
+      generatedState = matchResult ? matchResult[1] : null; // Extract the captured group or set to null if not found
+      console.log('Generated state:', generatedState);
+
       console.log(`Visit this URL to install the app: ${url}`);
     } catch (error) {
       console.error('Error starting Bolt app:', error);
     }
-  })();
+})();
 
  
 

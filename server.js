@@ -1,82 +1,50 @@
 
 require('dotenv').config();
 const nodemailer = require("nodemailer");
-// const session = require('express-session');
-const { App } = require('@slack/bolt');
-// const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
 
-// const expressReceiver = new ExpressReceiver({signingSecret: process.env.SLACK_SIGNING_SECRET})
+const { App, ExpressReceiver } = require('@slack/bolt');
+const { InstallProvider } = require('@slack/oauth');
 
-// expressReceiver.app.use(
-//     session({
-//       secret: process.env.SESSION_ID,
-//       resave: true,
-//       saveUninitialized: true,
-//     })
-// )
-const app = new App({
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
+// Create an instance of InstallProvider
+const installProvider = new InstallProvider({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_SECRET,
     scopes: ['app_mentions:read', 'chat:write', 'commands'],
 });
 
+const expressReceiver = new ExpressReceiver({
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
+    endpoints: '/slack/events',
+})
+
+const installationStore = {
+    storeInstallation: async (installation) => {
+        try {
+            await installProvider.storeInstallation(installation);
+        } catch (error) {
+            console.error('Error storing installation', error);
+            throw error;
+        }
+    },
+    fetchInstallation: async (installQuery) => {
+        try {
+            return await installProvider.fetchInstallation(installQuery);
+        } catch (error) {
+            console.error('Error fetching installation:', error);
+            throw error;
+        }
+    },
+};
+
+const app = new App({
+    receiver: expressReceiver,
+    installProvider,
+    installationStore,
+});
 
 
-// const installationStore = new FileInstallationStore({
-//     clientId: process.env.SLACK_CLIENT_ID,
-//     clientSecret: process.env.SLACK_CLIENT_SECRET,
-//     stateSecret: process.env.SLACK_STATE_SECRET,
-//     installationStorePath: 'installations.json',
-//   });
 
-//   const installProvider = new InstallProvider({
-//     clientId: process.env.SLACK_CLIENT_ID,
-//     clientSecret: process.env.SLACK_CLIENT_SECRET,
-//     stateSecret: process.env.SLACK_STATE_SECRET,
-//     authVersion: 'v2',
-//     installationStore,
-    
-//   })
-
-
-//   expressReceiver.router.post('/slack/events', async (req, res) => {
-//     try {
-//         await app.receiver.handleRequest(req, res);
-//     } catch (error) {
-//         console.error('Error handling Slack events:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// });
-
-
-
-// expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
-//     try {
-//       const receivedState = req.query.state;
-//       console.log('Received state:', receivedState);
-  
-
-     
-      
-//       if (installProvider.ver(receivedState)) {
-//         const result = await installProvider.handleCallback(req, res);
-//         res.json(result);
-//       } else {
-//         console.error('OAuth states do not match. Potential CSRF attack.');
-//         res.status(400).send('OAuth states do not match. Potential CSRF attack.');
-//       }
-//     } catch (error) {
-//       console.error('Error handling OAuth redirect:', error);
-//       res.status(500).send('Internal Server Error');
-//     }
-//   });
-
-// ...
-
-
-// ...
 
 (async () => {
     try {
@@ -84,18 +52,7 @@ const app = new App({
       console.log('⚡️ Bolt app is running!');
     
      
-    //   const url = await installProvider.generateInstallUrl({
-    //     scopes: ['app_mentions:read', 'chat:write', 'commands'],
-    //     redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
-       
-        
-       
-    //   });
-    //   const matchResult = url.match(/state=([^&]*)/);
-    //   generatedState = matchResult ? matchResult[1] : null; 
-    //   console.log('Generated state:', generatedState);
-
-    //   console.log(`Visit this URL to install the app: ${url}`);
+ 
     } catch (error) {
       console.error('Error starting Bolt app:', error);
     }

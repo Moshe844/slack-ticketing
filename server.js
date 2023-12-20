@@ -51,28 +51,26 @@ const installationStore = new FileInstallationStore({
 // Route for handling OAuth redirects
 // ...
 
-let generatedState; // Variable to store the generated state
-
 expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
     try {
-        const receivedState = req.query.state;
-        console.log('Received state:', receivedState);
-
-        // Compare receivedState with the one you generated
-        if (receivedState === generatedState) {
-            // States match, proceed with OAuth callback handling
-            const result = await installProvider.handleCallback(req, res);
-            res.json(result);
-        } else {
-            // States do not match, log an error or handle it as needed
-            console.error('OAuth states do not match. Potential CSRF attack.');
-            res.status(400).send('OAuth states do not match. Potential CSRF attack.');
-        }
+      const receivedState = req.query.state;
+      console.log('Received state:', receivedState);
+  
+      // Compare receivedState with the one you generated
+      if (installProvider.verifyStateParam(receivedState)) {
+        // States match, proceed with OAuth callback handling
+        const result = await installProvider.handleCallback(req, res);
+        res.json(result);
+      } else {
+        // States do not match, log an error or handle it as needed
+        console.error('OAuth states do not match. Potential CSRF attack.');
+        res.status(400).send('OAuth states do not match. Potential CSRF attack.');
+      }
     } catch (error) {
-        console.error('Error handling OAuth redirect:', error);
-        res.status(500).send('Internal Server Error');
+      console.error('Error handling OAuth redirect:', error);
+      res.status(500).send('Internal Server Error');
     }
-});
+  });
 
 // ...
 
@@ -88,6 +86,8 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
       const url = await installProvider.generateInstallUrl({
         scopes: ['app_mentions:read', 'chat:write', 'commands'],
         redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
+
+        
        
       });
       const matchResult = url.match(/state=([^&]*)/);

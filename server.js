@@ -1,78 +1,77 @@
 
 require('dotenv').config();
 const nodemailer = require("nodemailer");
-const session = require('express-session');
-const { App, ExpressReceiver } = require('@slack/bolt');
-const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
+// const session = require('express-session');
+const { App } = require('@slack/bolt');
+// const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
 
-const expressReceiver = new ExpressReceiver({signingSecret: process.env.SLACK_SIGNING_SECRET})
+// const expressReceiver = new ExpressReceiver({signingSecret: process.env.SLACK_SIGNING_SECRET})
 
-expressReceiver.app.use(
-    session({
-      secret: process.env.SESSION_ID,
-      resave: true,
-      saveUninitialized: true,
-    })
-)
+// expressReceiver.app.use(
+//     session({
+//       secret: process.env.SESSION_ID,
+//       resave: true,
+//       saveUninitialized: true,
+//     })
+// )
 const app = new App({
-    token: process.env.SLACK_BOT_TOKEN,
-    receiver: expressReceiver
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
+    clientId: process.env.SLACK_CLIENT_ID,
+    clientSecret: process.env.SLACK_CLIENT_SECRET,
+    stateSecret: process.env.SLACK_STATE_SECRET,
+    scopes: ['app_mentions:read', 'chat:write', 'commands'],
 });
 
 
 
-const installationStore = new FileInstallationStore({
-    clientId: process.env.SLACK_CLIENT_ID,
-    clientSecret: process.env.SLACK_CLIENT_SECRET,
-    stateSecret: process.env.SLACK_STATE_SECRET,
-    installationStorePath: 'installations.json',
-  });
+// const installationStore = new FileInstallationStore({
+//     clientId: process.env.SLACK_CLIENT_ID,
+//     clientSecret: process.env.SLACK_CLIENT_SECRET,
+//     stateSecret: process.env.SLACK_STATE_SECRET,
+//     installationStorePath: 'installations.json',
+//   });
 
-  const installProvider = new InstallProvider({
-    clientId: process.env.SLACK_CLIENT_ID,
-    clientSecret: process.env.SLACK_CLIENT_SECRET,
-    stateSecret: process.env.SLACK_STATE_SECRET,
-    authVersion: 'v2',
-    installationStore,
+//   const installProvider = new InstallProvider({
+//     clientId: process.env.SLACK_CLIENT_ID,
+//     clientSecret: process.env.SLACK_CLIENT_SECRET,
+//     stateSecret: process.env.SLACK_STATE_SECRET,
+//     authVersion: 'v2',
+//     installationStore,
     
-  })
+//   })
 
 
-  expressReceiver.router.post('/slack/events', async (req, res) => {
-    try {
-        await app.receiver.handleRequest(req, res);
-    } catch (error) {
-        console.error('Error handling Slack events:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+//   expressReceiver.router.post('/slack/events', async (req, res) => {
+//     try {
+//         await app.receiver.handleRequest(req, res);
+//     } catch (error) {
+//         console.error('Error handling Slack events:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// });
 
-// Route for handling OAuth redirects
-// Route for handling OAuth redirects
-// ...
 
-expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
-    try {
-      const receivedState = req.query.state;
-      console.log('Received state:', receivedState);
+
+// expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
+//     try {
+//       const receivedState = req.query.state;
+//       console.log('Received state:', receivedState);
   
 
      
-      // Compare receivedState with the one you generated
-      if (installProvider.ver(receivedState)) {
-        // States match, proceed with OAuth callback handling
-        const result = await installProvider.handleCallback(req, res);
-        res.json(result);
-      } else {
-        // States do not match, log an error or handle it as needed
-        console.error('OAuth states do not match. Potential CSRF attack.');
-        res.status(400).send('OAuth states do not match. Potential CSRF attack.');
-      }
-    } catch (error) {
-      console.error('Error handling OAuth redirect:', error);
-      res.status(500).send('Internal Server Error');
-    }
-  });
+      
+//       if (installProvider.ver(receivedState)) {
+//         const result = await installProvider.handleCallback(req, res);
+//         res.json(result);
+//       } else {
+//         console.error('OAuth states do not match. Potential CSRF attack.');
+//         res.status(400).send('OAuth states do not match. Potential CSRF attack.');
+//       }
+//     } catch (error) {
+//       console.error('Error handling OAuth redirect:', error);
+//       res.status(500).send('Internal Server Error');
+//     }
+//   });
 
 // ...
 
@@ -84,19 +83,19 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
       await app.start(process.env.PORT || 3000);
       console.log('⚡️ Bolt app is running!');
     
-      // Trigger OAuth installation initiation
-      const url = await installProvider.generateInstallUrl({
-        scopes: ['app_mentions:read', 'chat:write', 'commands'],
-        redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
+     
+    //   const url = await installProvider.generateInstallUrl({
+    //     scopes: ['app_mentions:read', 'chat:write', 'commands'],
+    //     redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
        
         
        
-      });
-      const matchResult = url.match(/state=([^&]*)/);
-      generatedState = matchResult ? matchResult[1] : null; // Extract the captured group or set to null if not found
-      console.log('Generated state:', generatedState);
+    //   });
+    //   const matchResult = url.match(/state=([^&]*)/);
+    //   generatedState = matchResult ? matchResult[1] : null; 
+    //   console.log('Generated state:', generatedState);
 
-      console.log(`Visit this URL to install the app: ${url}`);
+    //   console.log(`Visit this URL to install the app: ${url}`);
     } catch (error) {
       console.error('Error starting Bolt app:', error);
     }

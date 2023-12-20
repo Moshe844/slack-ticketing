@@ -1,7 +1,6 @@
 
 require('dotenv').config();
 const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 const session = require('express-session');
 const { App, ExpressReceiver } = require('@slack/bolt');
 const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
@@ -57,12 +56,10 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
       const receivedState = req.query.state;
       console.log('Received state:', receivedState);
   
-      // Retrieve stored state from the session
-      const storedState = req.session.installationState;
-      console.log('Stored state:', storedState);
-  
-      // Compare receivedState with the one stored in the session
-      if (receivedState === storedState) {
+
+     
+      // Compare receivedState with the one you generated
+      if (installProvider.ver(receivedState)) {
         // States match, proceed with OAuth callback handling
         const result = await installProvider.handleCallback(req, res);
         res.json(result);
@@ -76,7 +73,6 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   });
-  
 
 // ...
 

@@ -57,15 +57,11 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
       const receivedState = req.query.state;
       console.log('Received state:', receivedState);
   
-      const generatedState = Math.random().toString(36).substring(7);
-    
-      const generatedStateHash = crypto
-        .createHmac('sha256', process.env.SLACK_STATE_SECRET)
-        .update(generatedState)
-        .digest('hex')
-     
-      // Compare receivedState with the one you generated
-      if (receivedState === generatedStateHash) {
+      // Retrieve stored state from the session
+      const storedState = req.session.installationState;
+  
+      // Compare receivedState with the one stored in the session
+      if (receivedState === storedState) {
         // States match, proceed with OAuth callback handling
         const result = await installProvider.handleCallback(req, res);
         res.json(result);
@@ -79,34 +75,32 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   });
-
-// ...
-
-
-// ...
-
-(async () => {
+  
+  // Start the Bolt app
+  (async () => {
     try {
       await app.start(process.env.PORT || 3000);
       console.log('⚡️ Bolt app is running!');
-    
+  
       // Trigger OAuth installation initiation
+      const generatedState = Math.random().toString(36).substring(7);
+  
+      // Store the generated state in the session
+      expressReceiver.app.use((req, res, next) => {
+        req.session.installationState = generatedState;
+        next();
+      });
+  
       const url = await installProvider.generateInstallUrl({
         scopes: ['app_mentions:read', 'chat:write', 'commands'],
         redirectUri: 'https://slack-ticketing-request.onrender.com/slack/oauth_redirect',
-       
-        
-       
       });
-      const matchResult = url.match(/state=([^&]*)/);
-      generatedState = matchResult ? matchResult[1] : null; // Extract the captured group or set to null if not found
-      console.log('Generated state:', generatedState);
-
+  
       console.log(`Visit this URL to install the app: ${url}`);
     } catch (error) {
       console.error('Error starting Bolt app:', error);
     }
-})();
+  })();
 
  
 

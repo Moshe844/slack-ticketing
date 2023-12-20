@@ -2,11 +2,14 @@
 require('dotenv').config();
 const nodemailer = require("nodemailer");
 
-const session = require('express-session');
 const { App, ExpressReceiver } = require('@slack/bolt');
-const {InstallProvider,FileInstallationStore} = require('@slack/oauth')
+const { InstallProvider, FileInstallationStore } = require('@slack/oauth');
+const session = require('express-session');
 
-const expressReceiver = new ExpressReceiver({ signingSecret: process.env.SLACK_SIGNING_SECRET });
+const expressReceiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+});
+
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: expressReceiver,
@@ -33,8 +36,10 @@ const sessionMiddleware = session({
   saveUninitialized: true,
 });
 
+// Use session middleware before handling any Slack events
 expressReceiver.app.use(sessionMiddleware);
 
+// Handle Slack events
 expressReceiver.router.post('/slack/events', async (req, res) => {
   try {
     await app.receiver.handleRequest(req, res);
@@ -44,6 +49,7 @@ expressReceiver.router.post('/slack/events', async (req, res) => {
   }
 });
 
+// Handle OAuth redirect
 expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
   try {
     const receivedState = req.query.state;
@@ -68,11 +74,9 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
   }
 });
 
+// Start the Bolt app
 (async () => {
   try {
-    // Use the same session middleware for the initiation
-    expressReceiver.app.use(sessionMiddleware);
-
     await app.start(process.env.PORT || 3000);
     console.log('⚡️ Bolt app is running!');
 
@@ -95,7 +99,6 @@ expressReceiver.router.get('/slack/oauth_redirect', async (req, res) => {
   }
 })();
 
- 
 
 
 

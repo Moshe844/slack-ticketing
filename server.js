@@ -2,49 +2,15 @@
 require('dotenv').config();
 const nodemailer = require("nodemailer");
 
-const { App, ExpressReceiver } = require('@slack/bolt');
-const { InstallProvider } = require('@slack/oauth');
+const { App } = require('@slack/bolt');
 
-// Create an instance of InstallProvider
-const installProvider = new InstallProvider({
+const app = new App({
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_SECRET,
     scopes: ['app_mentions:read', 'chat:write', 'commands'],
 });
-
-const expressReceiver = new ExpressReceiver({
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-    endpoints: '/slack/events',
-})
-
-const installationStore = {
-    storeInstallation: async (installation) => {
-        try {
-            await installProvider.storeInstallation(installation);
-        } catch (error) {
-            console.error('Error storing installation', error);
-            throw error;
-        }
-    },
-    fetchInstallation: async (installQuery) => {
-        try {
-            return await installProvider.fetchInstallation(installQuery);
-        } catch (error) {
-            console.error('Error fetching installation:', error);
-            throw error;
-        }
-    },
-};
-
-const app = new App({
-    receiver: expressReceiver,
-    installProvider,
-    installationStore,
-});
-
-app.installationStore = installationStore;
-app.installProvider = installProvider;
 
 
 

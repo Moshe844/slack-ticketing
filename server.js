@@ -4,14 +4,35 @@ const nodemailer = require("nodemailer");
 
 const { App } = require('@slack/bolt');
 
+const database = {};
+
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_SECRET,
     scopes: ['app_mentions:read', 'chat:write', 'commands'],
-});
-
+    installationStore: {
+       storeInstallation: async (installation)=> {
+         if(installation.isEnterpriseInstall){
+            database[installation.enterprise.id] = installation;
+         } else {
+            database[installation.team.id] = installation;
+         }
+       },
+       fetchInstallation: async (installQuery)=> {
+        if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
+            
+            return database[installQuery.enterpriseId];
+          }
+          if (installQuery.teamId !== undefined) {
+            
+            return database[installQuery.teamId];
+          }
+          throw new Error('Failed fetching installation');
+        },
+      },
+    });
 
 
 

@@ -2,12 +2,15 @@
 require('dotenv').config();
 const nodemailer = require("nodemailer");
 
-const { App } = require('@slack/bolt');
+const { App, ExpressReceiver } = require('@slack/bolt');
 
 const database = {};
 
-const app = new App({
+const expressReceiver = new ExpressReceiver({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
+})
+const app = new App({
+    receiver: expressReceiver,
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_SECRET,

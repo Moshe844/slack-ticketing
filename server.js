@@ -16,27 +16,34 @@ const app = new App({
     stateSecret: process.env.SLACK_STATE_SECRET,
     scopes: ['app_mentions:read', 'chat:write', 'commands'],
     installationStore: {
-       storeInstallation: async (installation)=> {
-         if(installation.isEnterpriseInstall){
-            database[installation.enterprise.id] = installation;
-         } else {
-            database[installation.team.id] = installation;
-         }
-       },
-       fetchInstallation: async (installQuery)=> {
-        if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
-            
-            return database[installQuery.enterpriseId];
-          }
-          if (installQuery.teamId !== undefined) {
-            
-            return database[installQuery.teamId];
-          }
-          throw new Error('Failed fetching installation');
+        storeInstallation: async (installation) => {
+            try {
+                if (installation.isEnterpriseInstall) {
+                    database[installation.enterprise.id] = installation;
+                } else {
+                    database[installation.team.id] = installation;
+                }
+            } catch (error) {
+                console.error('Error storing installation:', error);
+                throw error;
+            }
         },
-      },
-    });
-
+        fetchInstallation: async (installQuery) => {
+            try {
+                if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
+                    return database[installQuery.enterpriseId];
+                }
+                if (installQuery.teamId !== undefined) {
+                    return database[installQuery.teamId];
+                }
+                throw new Error('Failed fetching installation');
+            } catch (error) {
+                console.error('Error fetching installation:', error);
+                throw error;
+            }
+        },
+    },
+});
 
 
 (async () => {
